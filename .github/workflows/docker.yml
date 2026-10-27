@@ -119,6 +119,11 @@ jobs:
           docker run -d --name warhutv-smoke -p 18080:3000 \
             -v "$cfg:/data" "$tag" >/dev/null
 
+          # Guards the alpine runtime stage: the image must ship a usable shell
+          # (docker exec -it warhutv sh), which a regression back to scratch
+          # would silently remove.
+          docker exec warhutv-smoke /bin/sh -c 'echo "shell ok: $(uname -s)"'
+
           for _ in $(seq 1 30); do
             if curl -fsS http://127.0.0.1:18080/api/version >/dev/null 2>&1; then
               curl -fsS http://127.0.0.1:18080/api/version

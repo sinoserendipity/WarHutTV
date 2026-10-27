@@ -14,8 +14,16 @@ COPY backend/ ./
 COPY --from=frontend /app/dist frontend/dist
 RUN CGO_ENABLED=0 go build -tags embed -ldflags="-s -w" -trimpath -o warhutv .
 
-FROM scratch
-COPY --from=backend /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+# Runtime image. alpine rather than scratch so operators get a shell:
+#   docker exec -it warhutv sh
+# The Go binary is still a static build; nothing from alpine is loaded at
+# runtime. ca-certificates: outbound HTTPS to the source APIs / douban /
+# bangumi. tzdata: correct timestamps in logs. curl: health checks and
+# debugging from inside the container.
+FROM alpine:3
+RUN apk add --no-cache ca-certificates tzdata curl
+
+WORKDIR /
 COPY --from=backend /app/warhutv /warhutv
 COPY --from=frontend /app/dist /frontend/dist
 COPY data/config.json /data/config.json
