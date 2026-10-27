@@ -75,7 +75,11 @@ export function usePlayController() {
   // Single-writer plumbing: let the source-switch hook flush the live playback
   // position into history *before* it swaps sources, so cross-source resume
   // (time + episode index) stays continuous. `flush` is only read at runtime,
-  // so assigning it after the deps object is built is safe.
+  // so assigning it after the deps object is built is safe. `deps` is a fresh
+  // object literal per render, so this write cannot leak across renders; it has
+  // to happen during render (not in an effect) because useSourceSwitch's own
+  // effects are registered before any later effect could run.
+  // eslint-disable-next-line react-hooks/refs -- intentional "late binding" of flush into this render's deps
   deps.progressFlush = flush;
 
   // Scroll the active source into view when the selection or list changes.
