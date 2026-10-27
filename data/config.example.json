@@ -2,7 +2,7 @@
   "site_name": "WarHutTV",
   "announcement": "欢迎使用 WarHutTV",
   "password": "Ebr0yEmCigsJEOdN",
-  "jwt_secret": "b03559bef32d1c06a26f0ef96df6342ea5e75a810a7b3ddfd9255f6324520cd8",
+  "jwt_secret": "FnCr2sZZCGUXrkj0waCAV7BIJJZK0ziazItIjYZn6kY=",
   "api_site": {
     "source_1": {
       "api": "https://iqiyizyapi.com/api.php/provide/vod",
